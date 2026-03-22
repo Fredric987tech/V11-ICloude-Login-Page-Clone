@@ -15,11 +15,17 @@ body {
     font-family: 'Roboto', sans-serif;
     background-color: #fff;
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* HEADER - LOGO FIJO */
+/* HEADER */
 header nav {
     padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
 }
 
 .icloud-logo {
@@ -28,13 +34,15 @@ header nav {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: #000;
 }
 
 .icloud-logo i {
     font-size: 1.5em;
+    color: #000;
 }
 
-/* HERO SECTION */
+/* HERO SECTION (INDEX) */
 .hero-section {
     display: flex;
     flex-direction: column;
@@ -58,18 +66,25 @@ header nav {
     border-radius: 20px;
 }
 
+@media (max-width: 768px) {
+    .memoji-vid {
+        display: none;
+    }
+}
+
 .heading h1 {
     font-size: clamp(3rem, 8.5vw, 6rem);
     font-weight: 700;
     margin: 1rem 0;
     line-height: 1.1;
+    color: #1d1d1f;
 }
 
 #sign-in-btn {
     padding: clamp(0.8rem, 2vw, 1.2rem) clamp(2rem, 5vw, 3rem);
     border: none;
     border-radius: 50px;
-    background-color: black;
+    background-color: #000;
     color: #fff;
     font-size: clamp(1.1rem, 3vw, 1.4rem);
     font-weight: 500;
@@ -95,10 +110,10 @@ header nav {
     text-align: center;
     margin: 2rem auto;
     font-weight: 500;
-    line-height: 1.6;
+    color: #1d1d1f;
 }
 
-/* BOXES SECTION */
+/* BOXES SECTION (INDEX) */
 .box-container {
     display: flex;
     align-items: center;
@@ -124,6 +139,7 @@ header nav {
     padding: clamp(1.5rem, 3vw, 2.5rem);
     height: clamp(500px, 60vh, 600px);
     transition: all 0.3s ease;
+    background: white;
 }
 
 .box-1:hover,
@@ -145,6 +161,7 @@ header nav {
     font-weight: 600;
     text-align: center;
     margin: 0 auto;
+    color: #1d1d1f;
 }
 
 .box-1-txt,
@@ -153,7 +170,7 @@ header nav {
     text-align: justify;
     line-height: 1.7;
     margin: 0 auto;
-    color: #333;
+    color: #515154;
 }
 
 /* FOOTER */
@@ -166,6 +183,7 @@ footer {
     padding: clamp(2rem, 4vw, 3rem);
     gap: 1rem;
     text-align: center;
+    margin-top: 4rem;
 }
 
 .footer-div {
@@ -193,9 +211,177 @@ footer {
         flex-direction: column;
         gap: 0.5rem;
     }
+    
+    .copyright {
+        font-size: 0.8rem;
+    }
 }
 
-/* RESPONSIVE - MÓVIL */
+/* LOGIN PAGE */
+#main {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    flex: 1;
+}
+
+#sign-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    border-radius: 20px;
+    border: none;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, 
+                rgba(17, 17, 26, 0.1) 0px 8px 24px, 
+                rgba(17, 17, 26, 0.1) 0px 16px 48px;
+    width: clamp(320px, 85vw, 450px);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: white;
+    position: relative;
+}
+
+/* LOGIN ANIMATIONS */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.step.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#apple-color-logo {
+    width: clamp(100px, 22vw, 140px);
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+#sign-in p {
+    font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+#email-phone, #password, #password-confirm {
+    width: 100%;
+    padding: 1rem 3.5rem 1rem 1.2rem;
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+    border: 1.5px solid #d2d2d7;
+    border-radius: 12px;
+    background: #f5f5f7;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#email-phone:focus, #password:focus, #password-confirm:focus {
+    border-color: #0071e3;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    outline: none;
+}
+
+#email-phone::placeholder, #password::placeholder, #password-confirm::placeholder {
+    color: #86868b;
+    font-weight: 400;
+}
+
+.bx-right-arrow-circle,
+.bx-lock-alt {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+    color: #0071e3;
+    pointer-events: none;
+}
+
+.login-options {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    color: #6e6e73;
+    cursor: pointer;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+#check {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: #0071e3;
+    margin-top: 0.1rem;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.links a {
+    color: #0071e3;
+    font-size: clamp(0.85rem, 1.9vw, 0.95rem);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.links a:hover {
+    color: #0051a6;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #0071e3 0%, #0051a6 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: clamp(1rem, 2.2vw, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 113, 227, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     header nav {
         padding: 1rem;
@@ -206,10 +392,6 @@ footer {
         min-height: 60vh;
     }
     
-    .memoji-vid {
-        display: none;
-    }
-    
     .box-container {
         flex-direction: column;
         width: 95%;
@@ -217,8 +399,7 @@ footer {
         gap: 3rem;
     }
     
-    .box-1,
-    .box-2 {
+    .box-1, .box-2 {
         max-width: 100%;
         height: auto;
         min-height: 450px;
@@ -226,128 +407,51 @@ footer {
     
     footer {
         padding: 1.5rem 1rem;
+        margin-top: 2rem;
     }
 }
 
-/* TABLET */
-@media (max-width: 1024px) and (min-width: 769px) {
-    .box-container {
-        flex-direction: column;
-        gap: 4rem;
-    }
-}
-
-/* MÓVIL PEQUEÑO */
 @media (max-width: 480px) {
-    .hero-section {
-        padding: 0.5rem;
+    #main {
+        padding: 1rem 0.5rem;
+        min-height: calc(100vh - 160px);
     }
     
-    #intro-text {
-        width: 95%;
-        font-size: 1.1rem;
+    #sign-in {
+        width: 95vw;
+        padding: 1.5rem 1.2rem;
+        gap: 1.2rem;
     }
     
-    .box-1,
-    .box-2 {
-        padding: 1.5rem;
-        gap: 1.5rem;
+    #apple-color-logo {
+        width: 90px;
+    }
+    
+    #sign-in p {
+        font-size: 1.15rem;
+    }
+    
+    .login-options {
+        margin-top: 1rem;
+    }
+    
+    .checkbox-label {
+        margin-bottom: 0.75rem;
+    }
+    
+    .links a {
+        font-size: 0.88rem;
+    }
+    
+    label {
+        font-size: 0.88rem;
     }
 }
 
-/* SIGN-IN PAGE (mantenido igual pero responsive) */
-#main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-#sign-in {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 2rem;
-    border-radius: 20px;
-    border: none;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
-    width: clamp(350px, 90vw, 600px);
-    height: clamp(550px, 85vh, 600px);
-    padding: 2rem;
-}
-
-#apple-color-logo {
-    width: clamp(120px, 25vw, 180px);
-}
-
-#sign-in p {
-    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-    font-weight: 500;
-    text-align: center;
-}
-
-.input-container {
-    position: relative;
-    width: 100%;
-}
-
-.bx-right-arrow-circle {
-    position: absolute;
-    top: 50%;
-    right: 3%;
-    transform: translateY(-50%);
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
-    color: #007AFF;
-}
-
-#sign-in #email-phone {
-    padding: 1rem 3rem 1rem 1rem;
-    font-size: 1rem;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-#email-phone:focus {
-    border: 2px solid #007AFF;
-    outline: 0;
-    box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
-}
-
-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    width: 100%;
-}
-
-#check {
-    height: 18px;
-    width: 18px;
-    margin-right: 0.8rem;
-    accent-color: #007AFF;
-}
-
-#sign-in #email-phone::placeholder {
-    font-size: 1rem;
-    color: #999;
-}
-
-.links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    width: 100%;
-}
-
-.links a {
-    color: #007AFF;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
+/* LANDSCAPE MÓVIL */
+@media (max-height: 500px) and (orientation: landscape) {
+    #main {
+        padding: 1rem;
+    }
+    
+    #sign-in {
