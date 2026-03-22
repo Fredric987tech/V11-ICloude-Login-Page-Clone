@@ -7,38 +7,66 @@
     <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="icon" href="ICO/favicon-16x16.png">
-    <title>iCloud</title>
+    <title>Sign in - iCloud</title>
 </head>
 
 <body>
     <header>
         <nav>
-            <a href="#" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a>
+            <a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a>
         </nav>
     </header>
     <main id="main">
         <form id="sign-in">
-            <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="">
-            <p>Sign in with Apple ID</p>
-            <div class="input-container">
-                <a href="#"> <i class='bx bx-right-arrow-circle'></i></a>
-                <input id="email-phone" type="number, email" placeholder="Email or Phone Number">
+            <!-- STEP 1: EMAIL -->
+            <div class="step active" id="step1">
+                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple Logo">
+                <p>Sign in with Apple ID</p>
+                <div class="input-container">
+                    <input id="email-phone" type="email" placeholder="Email or Phone Number" required>
+                    <i class='bx bx-right-arrow-circle'></i>
+                </div>
             </div>
 
-            <label><input type="checkbox" id="check">Keep me signed in</label>
-            <div class="links"> <a href="#">Forgot Password?</a>
-                <a href="#">Create Apple ID</a></div>
+            <!-- STEP 2: PASSWORD (OCULTO inicial) -->
+            <div class="step" id="step2" style="display: none;">
+                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple Logo">
+                <p>Enter your password</p>
+                <div class="input-container">
+                    <input id="password" type="password" placeholder="Password" required>
+                    <i class='bx bx-lock-alt'></i>
+                </div>
+                <div class="input-container">
+                    <input id="password-confirm" type="password" placeholder="Confirm Password" required>
+                    <i class='bx bx-lock-alt'></i>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </div>
+
+            <!-- STEP 3: OPCIONES (siempre visible pero debajo) -->
+            <div class="login-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="check"> Keep me signed in
+                </label>
+                <div class="links">
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                    <a href="#" class="create-link">Create Apple ID</a>
+                </div>
+            </div>
         </form>
     </main>
     <footer>
-        <div class="footer-div">System status
+        <div class="footer-div">
+            <span>System status</span>
             <div class="sep"></div>
-            Privacy Policy
+            <span>Privacy Policy</span>
             <div class="sep"></div>
-            terms and condition
+            <span>Terms and Conditions</span>
         </div>
-        <div class="footer-div">Copyright © 2024 Apple Inc. All rights reserved.</div>
+        <div class="footer-div copyright">Copyright © 2024 Apple Inc. All rights reserved.</div>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 
 </html>
