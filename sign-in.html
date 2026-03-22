@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,47 +8,37 @@
     <link rel="icon" href="ICO/favicon-16x16.png">
     <title>Sign in - iCloud</title>
 </head>
-
 <body>
-    <header>
-        <nav>
-            <a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a>
-        </nav>
-    </header>
+    <header><nav><a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a></nav></header>
     <main id="main">
         <form id="sign-in">
             <!-- STEP 1: EMAIL -->
             <div class="step active" id="step1">
-                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple Logo">
-                <p>Sign in with Apple ID</p>
+                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
+                <p>Sign in with your Apple ID</p>
                 <div class="input-container">
-                    <input id="email-phone" type="email" placeholder="Email or Phone Number" required>
+                    <input id="email-phone" type="email" placeholder="Email or phone number" required>
                     <i class='bx bx-right-arrow-circle'></i>
                 </div>
             </div>
 
-            <!-- STEP 2: PASSWORD (OCULTO inicial) -->
-            <div class="step" id="step2" style="display: none;">
-                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple Logo">
+            <!-- STEP 2: PASSWORD -->
+            <div class="step" id="step2" style="display:none;">
+                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
                 <p>Enter your password</p>
                 <div class="input-container">
                     <input id="password" type="password" placeholder="Password" required>
                     <i class='bx bx-lock-alt'></i>
                 </div>
-                <div class="input-container">
-                    <input id="password-confirm" type="password" placeholder="Confirm Password" required>
-                    <i class='bx bx-lock-alt'></i>
-                </div>
                 <button type="submit" class="submit-btn">Sign In</button>
             </div>
 
-            <!-- STEP 3: OPCIONES (siempre visible pero debajo) -->
             <div class="login-options">
                 <label class="checkbox-label">
                     <input type="checkbox" id="check"> Keep me signed in
                 </label>
                 <div class="links">
-                    <a href="#" class="forgot-link">Forgot Password?</a>
+                    <a href="#" class="forgot-link">Forgot Apple ID or password?</a>
                     <a href="#" class="create-link">Create Apple ID</a>
                 </div>
             </div>
@@ -57,16 +46,14 @@
     </main>
     <footer>
         <div class="footer-div">
-            <span>System status</span>
-            <div class="sep"></div>
-            <span>Privacy Policy</span>
-            <div class="sep"></div>
-            <span>Terms and Conditions</span>
+            <span>System Status</span><div class="sep"></div>
+            <span>Privacy Policy</span><div class="sep"></div>
+            <span>Terms & Conditions</span>
         </div>
-        <div class="footer-div copyright">Copyright © 2024 Apple Inc. All rights reserved.</div>
+        <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
-
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('email-phone'),t=document.getElementById('step2'),n=document.getElementById('step1'),o=document.querySelector('.bx-right-arrow-circle'),r=document.getElementById('sign-in');o.addEventListener('click',e=>{e.preventDefault(),e.target.closest('.input-container').querySelector('input').value.trim()?(()=>{n.style.display='none',t.style.display='flex',t.classList.add('active'),setTimeout(()=>{document.getElementById('password').focus()},300)})(): (e.target.closest('input').focus(),setTimeout(()=>{e.target.closest('input').placeholder='Email or phone number'},1500))}),e.addEventListener('keypress',e=>{'Enter'===e.key&&e.target.value.trim()&&(()=>{n.style.display='none',t.style.display='flex',t.classList.add('active'),setTimeout(()=>{document.getElementById('password').focus()},300)})()}),r.addEventListener('submit',e=>{e.preventDefault();const t=document.getElementById('password').value;t?(alert('✅ ¡Login exitoso! Bienvenido a iCloud.'),window.location.href='index.html'):(alert('❌ Ingresa tu contraseña'),document.getElementById('password').focus())})});
+    </script>
 </body>
-
 </html>
