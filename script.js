@@ -1,67 +1,99 @@
-document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email-phone');
-    const passwordStep = document.getElementById('step2');
-    const step1 = document.getElementById('step1');
-    const arrowIcon = document.querySelector('.input-container i');
+    const arrowIcon = document.querySelector('.bx-right-arrow-circle');
+    const passwordField = document.getElementById('passwordField');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
     const form = document.getElementById('sign-in');
-    const submitBtn = document.querySelector('.submit-btn');
-
-    // Click en flecha → mostrar password
-    arrowIcon.addEventListener('click', function(e) {
-        e.preventDefault();
+    
+    let loginAttempts = 0;
+    const maxAttempts = 2;
+    
+    // Mostrar password al click flecha o Enter
+    const showPassword = () => {
         if (emailInput.value.trim()) {
-            showPasswordStep();
+            passwordField.classList.add('show');
+            submitBtn.classList.add('show');
+            // Suave focus al password
+            setTimeout(() => {
+                passwordInput.focus();
+                passwordInput.select();
+            }, 250);
         } else {
             emailInput.focus();
-            emailInput.placeholder = 'Please enter your email or phone';
-            setTimeout(() => {
-                emailInput.placeholder = 'Email or Phone Number';
-            }, 2000);
+            showError('Enter your email or phone number');
         }
-    });
-
-    // Enter en email → mostrar password
-    emailInput.addEventListener('keypress', function(e) {
+    };
+    
+    // Eventos para mostrar password
+    arrowIcon.addEventListener('click', showPassword);
+    
+    emailInput.addEventListener('keypress', e => {
         if (e.key === 'Enter' && emailInput.value.trim()) {
-            showPasswordStep();
+            e.preventDefault();
+            showPassword();
         }
     });
-
-    // Función mostrar paso password
-    function showPasswordStep() {
-        step1.style.display = 'none';
-        passwordStep.style.display = 'flex';
-        passwordStep.classList.add('active');
-        setTimeout(() => {
-            document.getElementById('password').focus();
-        }, 400);
-    }
-
+    
+    // Ocultar password si se borra email
+    emailInput.addEventListener('input', () => {
+        if (!emailInput.value.trim()) {
+            passwordField.classList.remove('show');
+            submitBtn.classList.remove('show');
+            passwordInput.value = '';
+        }
+    });
+    
     // Submit form
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', e => {
         e.preventDefault();
         
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password-confirm').value;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
         
-        if (password && password === confirmPassword) {
-            // Simular login exitoso
-            alert('✅ Login successful! Welcome to iCloud.');
-            // Aquí puedes redirigir: window.location.href = 'dashboard.html';
+        if (!email) {
+            showError('Please enter your email or phone number');
+            emailInput.focus();
+            return;
+        }
+        
+        if (!password) {
+            showError('Please enter your password');
+            passwordInput.focus();
+            return;
+        }
+        
+        loginAttempts++;
+        
+        if (loginAttempts < maxAttempts) {
+            showError('Incorrect password. Try again.');
+            passwordInput.value = '';
+            passwordInput.focus();
         } else {
-            alert('❌ Passwords do not match. Please try again.');
-            document.getElementById('password').focus();
+            // Simular éxito
+            errorMsg.textContent = 'Signing in...';
+            errorMsg.classList.add('show');
+            errorMsg.style.background = '#007AFF';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
         }
     });
-
-    // Links funcionales
-    document.querySelector('.forgot-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('🔒 Password reset link would open here');
+    
+    // Enter en password también submete
+    passwordInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            form.dispatchEvent(new Event('submit'));
+        }
     });
-
-    document.querySelector('.create-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('➕ Apple ID creation page would open here');
-    });
+    
+    function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.classList.add('show');
+        errorMsg.style.background = '#ff3b30';
+        setTimeout(() => errorMsg.classList.remove('show'), 3000);
+    }
 });
+</script>
