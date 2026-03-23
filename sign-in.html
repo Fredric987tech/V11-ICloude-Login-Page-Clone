@@ -1,120 +1,436 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Sign in - iCloud</title>
-</head>
-<body>
-    <header><nav><a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a></nav></header>
-    
-    <main id="main">
-        <form id="sign-in">
-            <div class="error-message" id="errorMsg"></div>
-            
-            <div class="login-form">
-                <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
-                <p id="loginTitle">Sign in with your Apple ID</p>
-                
-                <div class="input-group">
-                    <input id="email-phone" type="email" placeholder="Email or phone number" required>
-                    <i class='bx bx-right-arrow-circle'></i>
-                </div>
-                
-                <div class="input-group password-field" id="passwordField">
-                    <input id="password" type="password" placeholder="Password">
-                    <i class='bx bx-lock-alt'></i>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
-            </div>
-            
-            <div class="login-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="check"> Keep me signed in
-                </label>
-                <div class="links">
-                    <a href="#">Forgot Apple ID or password?</a>
-                    <a href="#">Create Apple ID</a>
-                </div>
-            </div>
-        </form>
-    </main>
-    
-    <footer>
-        <div class="footer-div">
-            <span>System Status</span><div class="sep"></div>
-            <span>Privacy Policy</span><div class="sep"></div>
-            <span>Terms & Conditions</span>
-        </div>
-        <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
-    </footer>
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-    <script>
-        let loginAttempts = 0;
-        const maxAttempts = 2;
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const emailInput = document.getElementById('email-phone');
-            const arrowIcon = document.querySelector('.bx-right-arrow-circle');
-            const passwordField = document.getElementById('passwordField');
-            const passwordInput = document.getElementById('password');
-            const submitBtn = document.getElementById('submitBtn');
-            const loginTitle = document.getElementById('loginTitle');
-            const errorMsg = document.getElementById('errorMsg');
-            const form = document.getElementById('sign-in');
-            
-            // Click flecha o Enter → mostrar password
-            const showPassword = () => {
-                if (emailInput.value.trim()) {
-                    passwordField.classList.add('show');
-                    submitBtn.classList.add('show');
-                    setTimeout(() => passwordInput.focus(), 300);
-                } else {
-                    emailInput.focus();
-                }
-            };
-            
-            arrowIcon.addEventListener('click', showPassword);
-            emailInput.addEventListener('keypress', e => {
-                if (e.key === 'Enter' && emailInput.value.trim()) {
-                    showPassword();
-                }
-            });
-            
-            // Submit
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                loginAttempts++;
-                
-                const email = emailInput.value.trim();
-                const password = passwordInput.value.trim();
-                
-                if (!email || !password) {
-                    showError('Please enter both email and password');
-                    return;
-                }
-                
-                if (loginAttempts < maxAttempts) {
-                    showError('Incorrect password. Try again.');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                } else {
-                    // Éxito en 2do intento
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 800);
-                }
-            });
-            
-            function showError(message) {
-                errorMsg.textContent = message;
-                errorMsg.classList.add('show');
-                setTimeout(() => errorMsg.classList.remove('show'), 3000);
-            }
-        });
-    </script>
-</body>
-</html>
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+a { color: inherit; text-decoration: none; }
+
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #f5f5f7 0%, #fafafa 100%);
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+/* HEADER */
+header nav, header .nav-container {
+    padding: 1.2rem 2.5rem;
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+}
+
+.icloud-logo {
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #000;
+    letter-spacing: -0.015em;
+}
+
+.icloud-logo i { font-size: 1.7em; color: #000; }
+
+/* INDEX PAGE */
+.hero-section { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 70vh; 
+    padding: 2rem 1rem; 
+    text-align: center; 
+}
+
+.memoji-vid, .memoji-vid .mobile-hidden {
+    max-width: 100%; 
+    height: auto; 
+    margin-bottom: 2rem; 
+}
+.memoji-vid video { 
+    width: 100%; 
+    max-width: 800px; 
+    height: auto; 
+    border-radius: 24px; 
+}
+@media (max-width: 768px) { 
+    .memoji-vid, .mobile-hidden { display: none; } 
+}
+
+.heading h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 300;
+    margin: 1rem 0;
+    line-height: 1;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
+}
+
+.sign-in-button, #sign-in-btn {
+    padding: clamp(1rem, 2.5vw, 1.3rem) clamp(2.5rem, 6vw, 4rem);
+    border: none;
+    border-radius: 999px;
+    background: #000;
+    color: #fff;
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    display: inline-block;
+}
+
+.sign-in-button:hover, #sign-in-btn:hover {
+    background: #1a1a1a;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}
+
+.sign-in-button a {
+    color: white;
+    text-decoration: none;
+    font-size: inherit;
+}
+
+#intro-text, .intro p {
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    width: min(90%, 550px);
+    text-align: center;
+    margin: 2rem auto;
+    font-weight: 400;
+    color: #515154;
+}
+
+/* BOXES */
+.box-container {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    width: min(95%, 1200px); 
+    margin: 6rem auto;
+    gap: clamp(3rem, 6vw, 5rem); 
+    flex-wrap: wrap;
+}
+
+.box-1, .box-2 {
+    flex: 1; 
+    min-width: 320px; 
+    max-width: 480px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+    gap: 1.5rem; 
+    padding: 2.5rem;
+    height: clamp(480px, 55vh, 550px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: white;
+}
+
+.box-1:hover, .box-2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 35px 70px -15px rgba(0,0,0,0.3);
+}
+
+.box-1-img, .box-2-img { 
+    width: clamp(140px, 22vw, 200px); 
+    height: auto; 
+    margin: 0 auto; 
+}
+#box-1-heading, #box-2-heading { 
+    font-size: clamp(1.3rem, 2.1vw, 1.6rem); 
+    font-weight: 600; 
+    text-align: center; 
+    color: #1d1d1f; 
+}
+.box-1-txt, .box-2-txt { 
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem); 
+    text-align: center; 
+    line-height: 1.6; 
+    color: #515154; 
+}
+
+/* LOGIN PAGE */
+#main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+#sign-in {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    width: clamp(360px, 92vw, 440px);
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: visible;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+}
+
+#apple-color-logo { 
+    width: clamp(105px, 25vw, 135px); 
+    height: auto; 
+}
+
+#sign-in p {
+    font-size: clamp(1.25rem, 3.2vw, 1.5rem);
+    font-weight: 600;
+    color: #1d1d1f;
+    text-align: center;
+    margin: 0;
+}
+
+.input-group {
+    width: 100%;
+    position: relative;
+}
+
+#email-phone, #password {
+    width: 100%;
+    padding: 1.15rem 3.5rem 1.15rem 1.4rem;
+    font-size: clamp(1rem, 2.4vw, 1.08rem);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: #f5f5f7;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-family: inherit;
+    font-weight: 400;
+}
+
+#email-phone:focus, #password:focus {
+    border-color: #007AFF;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(0,122,255,0.1);
+    outline: none;
+}
+
+#email-phone::placeholder { color: #999; }
+
+.password-field {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: scaleY(0.8) translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-top: 0;
+    position: relative;
+}
+
+.password-field.show {
+    opacity: 1;
+    max-height: 75px;
+    transform: scaleY(1) translateY(0);
+    margin-top: 1rem;
+}
+
+.bx-right-arrow-circle {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(1.3rem, 2.8vw, 1.4rem);
+    color: #007AFF;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.6rem;
+    z-index: 10;
+}
+
+.bx-right-arrow-circle:hover { 
+    color: #0056B3; 
+    transform: translateY(-50%) scale(1.05); 
+}
+
+.bx-lock-alt {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(1.25rem, 2.6vw, 1.35rem);
+    color: #86868b;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1.2rem;
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: clamp(1.05rem, 2.3vw, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    margin-top: 0;
+}
+
+.submit-btn.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    margin-top: 0.5rem;
+}
+
+.submit-btn:hover:not(:disabled) { 
+    background: #0066CC; 
+    transform: translateY(-2px) scale(1.02);
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ERROR ABAJO DEL PASSWORD */
+.error-message {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    background: #ff3b30;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(255,59,48,0.4);
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 20;
+    max-width: 90%;
+}
+
+.error-message.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.login-options {
+    width: 100%;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f2f2f7;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    font-size: clamp(0.88rem, 1.95vw, 0.96rem);
+    color: #6e6e73;
+    cursor: pointer;
+    gap: 0.8rem;
+    padding: 0.4rem 0;
+    margin-bottom: 0.5rem;
+}
+
+#check { 
+    width: 18px; 
+    height: 18px; 
+    accent-color: #007AFF;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+}
+
+.links a {
+    color: #007AFF;
+    font-size: clamp(0.87rem, 1.85vw, 0.94rem);
+    font-weight: 500;
+    padding: 0.4rem 0;
+    transition: color 0.25s ease;
+}
+
+.links a:hover { color: #0056B3; }
+
+/* PUSH FLUIDO */
+.login-form > *:nth-child(5),
+.login-form > *:nth-child(6),
+.login-form > *:nth-child(7) {
+    transition: margin-top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* FOOTER */
+footer, .footer-responsive {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    background: rgba(225, 222, 222, 0.5); 
+    padding: 3rem 2rem; 
+    gap: 1.5rem;
+    text-align: center; 
+    margin-top: 5rem; 
+    backdrop-filter: blur(10px);
+}
+
+.footer-div {
+    display: flex; 
+    flex-wrap: wrap; 
+    font-size: clamp(0.75rem, 1vw, 0.85rem);
+    color: #86868b; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 1.5rem;
+}
+
+.sep { 
+    background: #d2d2d7; 
+    height: 12px; 
+    width: 1px; 
+}
+@media (max-width: 480px) { 
+    .sep { display: none; } 
+    .footer-div { flex-direction: column; gap: 1rem; } 
+}
+
+.footer-div.copyright {
+    font-size: clamp(0.8rem, 1.1vw, 0.9rem);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    header nav, header .nav-container { padding: 1rem 1.5rem; }
+    .box-container { flex-direction: column; width: 95%; gap: 3rem; }
+    .box-1, .box-2 { max-width: 100%; height: auto; min-height: 420px; }
+}
+
+@media (max-width: 480px) {
+    #main { padding: 1.5rem 1rem; }
+    #sign-in { width: 96vw; padding: 2.5rem 2rem 2rem; margin: 1rem; }
+    #apple-color-logo { width: 90px; }
+    .error-message { bottom: -45px; font-size: 0.85rem; padding: 0.7rem 1.2rem; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    #sign-in { padding: 2.5rem 2rem; gap: 1.4rem; }
+}
