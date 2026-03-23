@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let loginAttempts = 0;
     const maxAttempts = 2;
     
-    // Mostrar password al click flecha o Enter
+    // Mostrar password
     const showPassword = () => {
         if (emailInput.value.trim()) {
             passwordField.classList.add('show');
             submitBtn.classList.add('show');
-            // Suave focus al password
             setTimeout(() => {
                 passwordInput.focus();
                 passwordInput.select();
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Eventos para mostrar password
+    // Eventos
     arrowIcon.addEventListener('click', showPassword);
     
     emailInput.addEventListener('keypress', e => {
@@ -37,16 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Ocultar password si se borra email
+    // Ocultar si borra email
     emailInput.addEventListener('input', () => {
         if (!emailInput.value.trim()) {
             passwordField.classList.remove('show');
             submitBtn.classList.remove('show');
             passwordInput.value = '';
+            errorMsg.classList.remove('show');
         }
     });
     
-    // Submit form
+    // Submit
     form.addEventListener('submit', e => {
         e.preventDefault();
         
@@ -72,17 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordInput.value = '';
             passwordInput.focus();
         } else {
-            // Simular éxito
+            // Éxito
             errorMsg.textContent = 'Signing in...';
-            errorMsg.classList.add('show');
             errorMsg.style.background = '#007AFF';
+            errorMsg.classList.add('show');
+            submitBtn.disabled = true;
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1200);
         }
     });
     
-    // Enter en password también submete
     passwordInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') {
             form.dispatchEvent(new Event('submit'));
@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function showError(message) {
         errorMsg.textContent = message;
-        errorMsg.classList.add('show');
         errorMsg.style.background = '#ff3b30';
+        errorMsg.classList.add('show');
         setTimeout(() => errorMsg.classList.remove('show'), 3000);
     }
 });
